@@ -1,0 +1,40 @@
+@startuml
+
+autoactivate on
+Vienna -> PLL #Green : Va,Vb,vc
+PLL -> GenericBlocks #LightGreen: GenerickBlock_Clarke()
+GenericBlocks -->> PLL: Valpha,Vbeta
+
+PLL -> GenericBlocks #LightGreen: GenerickBlock_Sogi(Valpha,w_est)
+GenericBlocks -->> PLL: v_al,qv_al
+
+PLL -> GenericBlocks #LightGreen: GenerickBlock_Sogi(Vbeta,w_est)
+GenericBlocks -->> PLL: v_be,qv_be
+
+PLL -> PLL #LightGreen: PLL_GetSeqComps
+deactivate PLL  
+
+PLL -> GenericBlocks #LightGreen: GenerickBlock_Park(v_al_pos,v_be_pos)
+GenericBlocks -->> PLL: vd_grid, vq_grid
+
+PLL -> GenericBlocks #LightGreen: GenerickBlock_PI(vq_grid)
+GenericBlocks -->> PLL: w_est
+
+PLL -> GenericBlocks #LightGreen: GenerickBlock_Mod(w_est,Ts)
+GenericBlocks -->> PLL: th_est
+
+PLL -> PLL #LightGreen: PLL_GetGridSins
+deactivate PLL 
+
+PLL --> Vienna : Vgrid seq comps,w_grid,th_grid
+
+Vienna -> VbusController #Green : VbusController_Calc(Vbus)
+VbusController -->> Vienna #LightGreen: vbus_con_out
+
+Vienna -> CurRefGen #Green : CurRefGen_Calc(Vgrid,Vgrid_seq_comps,Vbus_con_out)
+CurRefGen -->> Vienna #LightGreen: ia_ref,ib_ref,ic_ref
+
+Vienna -> CurController #Green : CurController_Calc(i_ref, i_fdbk)
+CurController -->> Vienna #LightGreen: dutyA,dutyB,dutyC
+
+@enduml

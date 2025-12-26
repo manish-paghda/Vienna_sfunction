@@ -1,0 +1,95 @@
+@startuml
+
+/'
+(*) --> "Request created" as Request
+Request --> "Review request" as Review 
+
+if "is Accepted?" then
+    --> [Yes] "Assign" 
+    if "is Urgent" then
+        --> [Yes] "In Development`" 
+        --> "Engineer Assigned"  
+    else
+        --> [No] "Backlog" as Backlog 
+        Backlog --> Review
+
+    endif
+else 
+    --> [No] "Won’t Do"
+endif
+'/
+
+/'
+@startuml
+start
+
+:Request created;
+
+while (Review request?) is (accepted)
+     :Assign;
+     if (is Urgent ?) then (Yes)
+        :In Development;
+        :Engineer Assigned;
+        stop
+    else (No)
+        :Backlog;
+    endif
+endwhile (not accepted)
+:Won't Do;
+stop
+@enduml
+'/
+
+
+
+
+@startuml
+start
+:Inialize;
+:Read ADC;
+:PLL;
+:Wait_for_run;
+
+while(Run)
+while (PLL_locked?)
+    :wait_for_PLL;
+
+endwhile
+    if(is fault ?) then (Yes)
+        :Wait_for_run;
+    else (No)
+    endif
+    :Vbus_ref_gen;
+    :Cur_ref_gen;
+    :Cur_control;
+    :PWM_generation;
+   
+
+endwhile
+stop
+@enduml
+
+/'
+@startuml
+start
+:Process Item;
+while (Are there more items?)
+  :Process Item;
+endwhile
+stop
+@enduml
+'/
+
+/'
+@startuml
+start
+:Process Task;
+if (Is task correct?) then (yes)
+  :Finalize Task;
+else (no)
+  :Process Task;  
+endif
+stop
+@enduml
+'/
+@enduml
